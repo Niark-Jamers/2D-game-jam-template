@@ -39,6 +39,8 @@ public class SideViewCharacterController : MonoBehaviour
     [System.NonSerialized]
     internal bool disableInputs = false;
 
+    CharacterInputs.SideViewActions sideViewInputs;
+
     // Use this for initialization
     void Start()
     {
@@ -49,13 +51,17 @@ public class SideViewCharacterController : MonoBehaviour
         r2d.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
         r2d.gravityScale = gravityScale;
         facingRight = transform.localScale.x > 0;
+
+        sideViewInputs = new CharacterInputs().SideView;
     }
 
     // Update is called once per frame
     void Update()
     {
+        var movement = sideViewInputs.Movement.ReadValue<Vector2>();
+
         // Movement controls
-        if (!disableInputs && (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.LeftArrow) || Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow)))
+        if (!disableInputs)
         {
             moveDirection = (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.LeftArrow)) ? -1 : 1;
             if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.LeftArrow))
