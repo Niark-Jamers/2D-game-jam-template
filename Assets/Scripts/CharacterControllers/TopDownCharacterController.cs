@@ -34,8 +34,11 @@ public class TopDownCharacterController : MonoBehaviour
 
         rigidbody2D.MovePosition(rigidbody2D.position + movement * speed * Time.fixedDeltaTime);
 
-        animator.SetFloat("MoveX", movement.x);
-        animator.SetFloat("MoveY", movement.y);
+        if (animator != null)
+        {
+            animator.SetFloat("MoveX", movement.x);
+            animator.SetFloat("MoveY", movement.y);
+        }
 
         if (movement.magnitude > 0)
             spriteRenderer.flipX = movement.x > 0;
@@ -45,7 +48,9 @@ public class TopDownCharacterController : MonoBehaviour
     {
         rigidbody2D.isKinematic = true;
         dead = true;
-        animator.SetTrigger("Death");
+
+        if (animator != null)
+            animator.SetTrigger("Death");
         // AudioManager.PlayOnShot(deathClip);
     }
 

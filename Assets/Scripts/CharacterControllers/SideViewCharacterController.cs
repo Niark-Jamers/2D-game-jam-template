@@ -53,21 +53,23 @@ public class SideViewCharacterController : MonoBehaviour
         facingRight = transform.localScale.x > 0;
 
         sideViewInputs = new CharacterInputs().SideView;
+        sideViewInputs.Enable();
     }
 
     // Update is called once per frame
     void Update()
     {
-        var movement = sideViewInputs.Movement.ReadValue<Vector2>();
+        var o = sideViewInputs.Movement.ReadValueAsObject();
+        var movement = sideViewInputs.Movement.ReadValue<float>();
 
         // Movement controls
         if (!disableInputs)
         {
-            moveDirection = (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.LeftArrow)) ? -1 : 1;
-            if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.Q) || Input.GetKey(KeyCode.LeftArrow))
-                speed = -maxSpeed;
-            if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-                speed = maxSpeed;
+            moveDirection = Mathf.Sign(movement);
+            if (Mathf.Abs(movement) > 0.001)
+                speed = moveDirection > 0 ? maxSpeed : -maxSpeed;
+            else
+                speed = 0;
         }
         else
         {
@@ -100,7 +102,7 @@ public class SideViewCharacterController : MonoBehaviour
         }
 
         // Jumping
-        bool wantsToJump = !disableInputs && (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow) || Input.GetKey(KeyCode.Z));
+        bool wantsToJump = !disableInputs && sideViewInputs.Jump.ReadValue<float>() > 0;
         if (r2d.velocity.y < 0)
             r2d.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         else if (r2d.velocity.y > 0 && !wantsToJump)
@@ -125,10 +127,10 @@ public class SideViewCharacterController : MonoBehaviour
 
     void UpdateJumpPressed()
     {
-        bool jump = !disableInputs && (Input.GetKeyDown(KeyCode.W) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.Z));
+        bool jump = !disableInputs && sideViewInputs.Jump.ReadValue<float>() > 0;
         if (jump)
             lastJumpPressedFrame = 0;
-        
+
         // If jump was pressed 4 frames before being grounded, we jump again
         jumpPressed = lastJumpPressedFrame <= jumpFrameDetectionCount;
         
