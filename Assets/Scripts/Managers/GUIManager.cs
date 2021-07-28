@@ -8,6 +8,11 @@ public class GUIManager : MonoBehaviour
     public GameObject pausePanel;
     public GameObject optionPanel;
     public AudioManager audioManager;
+
+    [Header("Transitions")]
+    public Animator fadeInBlack;
+    public Animator fadeOutBlack;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -45,5 +50,15 @@ public class GUIManager : MonoBehaviour
     {
         pausePanel.SetActive(!pausePanel.activeSelf);
         optionPanel.SetActive(!optionPanel.activeSelf);
+    }
+
+    public void SceneTransitionIn(float time)
+    {
+        fadeInBlack.enabled = true;
+    }
+
+    public void SceneTransitionOut(float time)
+    {
+        fadeOutBlack.enabled = true;
     }
 }

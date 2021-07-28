@@ -19,16 +19,39 @@ public class GameManager : MonoBehaviour
     [Space]
     public bool pause;
 
+    [Header("Scenes")]
+    public float transitionTime = 1;
+    public List<string> gameScenes;
+
     private Transform playerPosition;
+
+    public static GameManager instance;
 
     private void Awake()
     {
+        if (instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
+
+        instance = this;
+        DontDestroyOnLoad(gameObject);
+
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
         Time.timeScale = 1;
     }
 
     // Start is called before the first frame update
     void Start()
     {
+        guiManager.SceneTransitionOut(transitionTime);
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        guiManager.SceneTransitionOut(transitionTime);
     }
 
     // Update is called once per frame
@@ -53,5 +76,26 @@ public class GameManager : MonoBehaviour
     public void ReloadLevel()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    public void LoadNextScene()
+    {
+        int index = gameScenes.FindIndex(n => n == SceneManager.GetActiveScene().name);
+
+        if (index == -1)
+        {
+            Debug.Log("Scene not in game manager: " + SceneManager.GetActiveScene().name);
+            return;
+        }
+
+        if (index == gameScenes.Count)
+        {
+            Debug.Log("Already at the last scene!");
+            return;
+        }
+
+        guiManager.SceneTransitionIn(transitionTime);
+
+        SceneManager.LoadScene(gameScenes[index + 1]);
     }
 }
