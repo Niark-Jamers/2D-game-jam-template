@@ -55,10 +55,12 @@ public class GUIManager : MonoBehaviour
     public void SceneTransitionIn(float time)
     {
         fadeInBlack.enabled = true;
+        fadeInBlack.speed = 1.0f / time;
     }
 
     public void SceneTransitionOut(float time)
     {
         fadeOutBlack.enabled = true;
+        fadeOutBlack.speed = 1.0f / time;
     }
 }
